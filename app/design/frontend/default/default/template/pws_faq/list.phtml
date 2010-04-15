@@ -1,0 +1,31 @@
+<div id="messages_product_view"><?php echo $this->getMessagesBlock()->getGroupedHtml() ?></div>
+<div class="page-head">
+    <h3><?php echo Mage::helper('pws_faq')->getFAQTitle(); ?></h3>
+</div>
+
+<div class="page-content">
+	<?php $categories = $this->getCategories(); ?>
+	<?php if(!$categories->getSize()): ?>
+	<p><strong><?php echo $this->__('There are no entries.') ?></strong></p> 
+	<?php else: ?>
+	<?php foreach($categories as $category): ?>
+	<div class="faq-category">
+		<h3><?php echo $category->getName(); ?></h3>
+		
+		<?php if($category->getDescription()): ?>
+		<div class="faq-category-description"><?php echo $category->getDescription(); ?></div>
+		<?php endif; ?>
+		
+		<?php $articles = $category->getEnabledArticles(); ?>
+		<?php if($articles->getSize()): ?>
+		<ul class="faq-articles">
+		<?php foreach($articles as $article) :?>
+			<li><a href="<?php echo $this->getArticleUrl($article->getArticleId()); ?>"><?php echo $article->getTitle(); ?></a></li>
+		<?php endforeach; ?>
+		</ul>
+		<?php endif; ?>
+	</div>
+	<?php endforeach; ?>
+	<?php endif; ?>
+	
+</div>

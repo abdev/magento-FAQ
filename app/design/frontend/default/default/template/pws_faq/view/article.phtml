@@ -1,0 +1,17 @@
+<?php $article = $this->getArticle(); ?>
+<div id="messages_product_view"><?php echo $this->getMessagesBlock()->getGroupedHtml() ?></div>
+<div class="page-head">
+    <h3><?php echo $article->getTitle(); ?></h3>
+</div>
+
+<div class="page-content">
+	<div class="faq-article-content">
+	<?php echo $article->getContent(); ?>
+	</div>
+	
+	<p><small><?php echo $this->__('Last Updated: ') ?><?php echo $this->formatDate($article->getUpdatedOn(),'medium',true) ?></small></p>
+	
+	<div class="button-set">
+		<a href="<?php echo $this->getBackUrl() ?>" class="left">&laquo; <?php echo $this->__('Back') ?></a>
+	</div>
+</div>

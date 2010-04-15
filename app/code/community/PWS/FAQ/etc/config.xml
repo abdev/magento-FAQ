@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <PWS_FAQ>
+            <version>0.1.0</version>
+        </PWS_FAQ>
+    </modules>        
+    <frontend>
+        <routers>
+            <faq>
+                <use>standard</use>
+                <args>
+                    <module>PWS_FAQ</module>
+                    <frontName>faq</frontName>
+                </args>
+            </faq>
+        </routers>
+        <layout>
+            <updates>
+                <pws_faq module="PWS_FAQ">
+                    <file>pws_faq.xml</file>
+                </pws_faq>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <PWS_FAQ>
+                    <files>
+                        <default>PWS_FAQ.csv</default>
+                    </files>
+                </PWS_FAQ>
+            </modules>
+        </translate>
+    </frontend>
+    <admin>
+		<routers>
+			<adminhtml>			
+				<args>
+					<modules>
+	 					<PWS_FAQ before="Mage_Adminhtml">PWS_FAQ_Adminhtml</PWS_FAQ>
+					</modules>
+					<frontName>faq</frontName>
+				</args>
+			</adminhtml>
+		</routers>		
+   </admin>
+   <adminhtml>
+   		<translate>
+            <modules>
+                <PWS_FAQ>
+                    <files>
+                        <default>PWS_FAQ.csv</default>
+                    </files>
+                </PWS_FAQ>
+            </modules>
+        </translate>
+   		<layout>
+			<updates>
+				<pws_faq>
+					<file>pws_faq.xml</file>
+				</pws_faq>
+			</updates>
+		</layout>
+        <menu>
+            <cms>
+                <children>
+                    <pws_faq translate="title" module="pws_faq">
+                        <title>FAQ</title>    
+                        <children>                            
+                            <articles translate="title" module="pws_faq">
+                                <title>Manage Articles</title>
+                                <action>adminhtml/faqArticles/</action>
+                            </articles>
+                            <categories translate="title" module="pws_faq">
+                                <title>Manage Categories</title>
+                                <action>adminhtml/faqCategories/</action>
+                            </categories>
+                        </children> 
+                    </pws_faq>                    
+                </children>
+             </cms>
+        </menu>
+		<acl>
+            <resources>
+                <admin>
+                    <children>
+                        <cms>
+                            <children>
+                                <pws_faq translate="title" module="pws_faq">
+                                    <title>FAQ</title>
+                                    <children>                                        
+                                        <articles translate="title">
+                                            <title>Manage Articles</title>
+                                        </articles>
+                                        <categories translate="title">
+                                            <title>Manage Categories</title>
+                                        </categories>
+                                    </children>
+                                </pws_faq>
+                            </children>
+                        </cms>
+                        <system>
+		                    <children>
+		                        <config>
+		                            <children>		                            	
+		                                <pws_faq translate="title" module="pws_faq">
+		                                    <title>FAQ Section</title>
+		                                </pws_faq>
+		                            </children>
+		                        </config>
+		                    </children>
+		                </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+    <global> 
+		<models>
+			<pws_faq>
+				<class>PWS_FAQ_Model</class>
+				<resourceModel>pws_faq_mysql4</resourceModel>
+			</pws_faq>
+			<pws_faq_mysql4>
+            	<class>PWS_FAQ_Model_Mysql4</class>
+            	<entities>
+		            <categories>
+		                <table>faq_categories</table>
+		            </categories>
+            	</entities>
+            	<entities>
+		            <articles>
+		                <table>faq_articles</table>
+		            </articles>
+            	</entities>
+            	<entities>
+		            <categoriesArticles>
+		                <table>faq_categories_articles</table>
+		            </categoriesArticles>
+            	</entities>                 
+        	</pws_faq_mysql4>
+		</models>
+		<resources>
+            <pws_faq_setup>
+                <setup>
+                    <module>PWS_FAQ</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </pws_faq_setup>
+            <pws_faq_write>
+				<connection>
+					<use>core_write</use>
+				</connection>
+			</pws_faq_write>
+			<pws_faq_read>
+				<connection>
+					<use>core_read</use>
+				</connection>
+			</pws_faq_read>    
+   		</resources>
+		<blocks>     
+			  <pws_faq>
+			  	 <class>PWS_FAQ_Block</class>
+			  </pws_faq>	
+		</blocks>   	
+		<helpers>
+			<pws_faq>
+				<class>PWS_FAQ_Helper</class>
+			</pws_faq>
+		</helpers>
+		<events>
+			<!-- <catalog_product_save_after>
+                <observers>
+                    <pws_faq>
+                        <type>singleton</type>
+                        <class>pws_faq/observer</class>
+                        <method>saveRelatedProductSets</method>
+                    </pws_faq>
+                </observers>
+            </catalog_product_save_after>
+            <controller_action_postdispatch_adminhtml_catalog_product_action_attribute_save>
+				<observers>
+					<pws_extcustomoptions>
+                        <type>model</type>
+                        <class>pws_faq/observer</class>
+                        <method>saveRelatedProductSetsMassAction</method>
+                    </pws_extcustomoptions> 
+				</observers>
+			</controller_action_postdispatch_adminhtml_catalog_product_action_attribute_save> 	-->
+		</events>
+    </global>
+</config>

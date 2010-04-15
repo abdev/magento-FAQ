@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <PWS_FAQ>
+            <active>true</active>
+            <codePool>community</codePool>
+        </PWS_FAQ>
+    </modules>
+</config> 

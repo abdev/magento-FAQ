@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+	
+	<faq_index_index>
+		<reference name="root">
+            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
+        </reference> 
+        <reference name="head">
+        	<action method="addCss"><stylesheet>css/pws_faq.css</stylesheet></action>
+        </reference>
+		<reference name="content">
+		    <block type="pws_faq/list" name="faq.list" template="pws_faq/list.phtml" />
+		</reference>
+	</faq_index_index>
+	
+	<faq_index_view_article>
+		<reference name="root">
+            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
+        </reference> 
+        <reference name="head">
+        	<action method="addCss"><stylesheet>css/pws_faq.css</stylesheet></action>
+        </reference>
+		<reference name="content">
+		    <block type="pws_faq/view_article" name="faq.view.article" template="pws_faq/view/article.phtml" />
+		</reference>
+	</faq_index_view_article>
+	
+	<faq_index_view_category>
+		<reference name="root">
+            <action method="setTemplate"><template>page/2columns-left.phtml</template></action>
+        </reference> 
+        <reference name="head">
+        	<action method="addCss"><stylesheet>css/pws_faq.css</stylesheet></action>
+        </reference>
+		<reference name="content">
+		    <block type="pws_faq/view_category" name="faq.view.category" template="pws_faq/view/category.phtml" />
+		</reference>
+	</faq_index_view_category>
+</layout>
