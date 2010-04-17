@@ -1,0 +1,14 @@
+.faq-category{
+	margin-bottom: 25px;
+	padding-bottom: 5px;
+	border-bottom: 1px solid #B6D1E2;
+}
+
+.faq-category ul{
+	list-style-type: disc;
+	margin-left: 15px;
+}
+
+.faq-article-content{
+	margin-bottom: 25px;
+}
