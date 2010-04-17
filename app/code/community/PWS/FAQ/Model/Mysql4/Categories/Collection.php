@@ -60,4 +60,28 @@ class PWS_FAQ_Model_Mysql4_Categories_Collection extends Mage_Core_Model_Mysql4_
     }
     
     
+    /*
+    *	Override getSelectCountSql() because we have to remove grouping and join 
+    *	(see getSize() in Varien_Data_Collection_Db)
+    */
+    public function getSelectCountSql()
+    {
+        $countSelect = clone $this->getSelect();
+        $countSelect->reset(Zend_Db_Select::ORDER);
+        $countSelect->reset(Zend_Db_Select::LIMIT_COUNT);
+        $countSelect->reset(Zend_Db_Select::LIMIT_OFFSET);
+        $countSelect->reset(Zend_Db_Select::COLUMNS);
+        
+        
+        $countSelect->reset(Zend_Db_Select::GROUP);        
+        $countSelect->resetJoinLeft();
+
+        $countSelect->from('', 'count(*)');
+        
+        //var_dump($countSelect->__toString());
+        
+        return $countSelect;
+    }
+    
+    
 }
