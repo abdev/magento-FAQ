@@ -1,0 +1,36 @@
+= Magento FAQ
+
+A Magento module for managing Frequent Asked Questions. For screenshots see the wiki: http://wiki.github.com/abdev/magento-FAQ/
+
+== Installation
+
+    Requires Magento ver. > 1.3
+    Download the source code and copy the files in the corresponding magento folders; no Magento existing file is modified. 
+    
+    
+== Resources
+
+* View Source on GitHub (http://github.com/abdev/magento-FAQ)
+* Report Issues on GitHub (http://github.com/abdev/magento-FAQ/issues)
+* Read More at the Wiki (http://wiki.github.com/abdev/magento-FAQ/)
+   
+== Usage
+
+You can find the module in admin under CMS menu: FAQ entry.
+The FAQ entry has two submenus:
+	* Categories
+	* Articles
+First you have to add the articles and then asign articles to categories. An article can be assing to more than one category.
+In Admin->System->Configuration->CMS->FAQ you can set the FAQ title (front-end) and if you want to display categories without articles (by default, they are not displayed on FAQ category page) 
+
+You can access the FAQ in front-end at: http://my-magento-website/faq
+
+
+For more details and screenshots see the wiki: http://wiki.github.com/abdev/magento-FAQ/
+
+
+== Copyright
+
+Copyright (c) 2010 Anda Bardeanu. See LICENSE for details.
+License: Open Software License ("OSL") v. 3.0
+
