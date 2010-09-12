@@ -42,3 +42,5 @@ For more details and screenshots see: http://www.pandawebstudio.com/projects/fre
 Copyright (c) 2010 Anda Bardeanu. See LICENSE for details.
 License: Open Software License ("OSL") v. 3.0
 
+git archive master | tar -x -C /var/www/magento_custom_modules/PWS_FAQ_E
+
