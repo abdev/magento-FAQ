@@ -2,7 +2,7 @@
 <config>
     <modules>
         <PWS_FAQ>
-            <version>0.1.0</version>
+            <version>0.1.1</version>
         </PWS_FAQ>
     </modules>        
     <frontend>
@@ -126,14 +126,16 @@
             	<entities>
 		            <categories>
 		                <table>faq_categories</table>
-		            </categories>
-            	</entities>
-            	<entities>
+		            </categories> 
+		            <categories_stores>
+		                <table>faq_categories_stores</table>
+		            </categories_stores>       	
 		            <articles>
 		                <table>faq_articles</table>
-		            </articles>
-            	</entities>
-            	<entities>
+		            </articles>   
+		            <articles_stores>
+		                <table>faq_articles_stores</table>
+		            </articles_stores>            	
 		            <categoriesArticles>
 		                <table>faq_categories_articles</table>
 		            </categoriesArticles>
@@ -170,25 +172,5 @@
 				<class>PWS_FAQ_Helper</class>
 			</pws_faq>
 		</helpers>
-		<events>
-			<!-- <catalog_product_save_after>
-                <observers>
-                    <pws_faq>
-                        <type>singleton</type>
-                        <class>pws_faq/observer</class>
-                        <method>saveRelatedProductSets</method>
-                    </pws_faq>
-                </observers>
-            </catalog_product_save_after>
-            <controller_action_postdispatch_adminhtml_catalog_product_action_attribute_save>
-				<observers>
-					<pws_extcustomoptions>
-                        <type>model</type>
-                        <class>pws_faq/observer</class>
-                        <method>saveRelatedProductSetsMassAction</method>
-                    </pws_extcustomoptions> 
-				</observers>
-			</controller_action_postdispatch_adminhtml_catalog_product_action_attribute_save> 	-->
-		</events>
     </global>
 </config>

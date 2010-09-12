@@ -101,6 +101,7 @@ class PWS_FAQ_Block_Adminhtml_Faq_Articles_Edit_Tab_Articles extends Mage_Adminh
             'index'     => 'title',
         ));
         
+              
         $this->addColumn('status', array(
             'header'    => Mage::helper('pws_faq')->__('Status'),
             'align'     =>'left',
@@ -143,6 +144,15 @@ class PWS_FAQ_Block_Adminhtml_Faq_Articles_Edit_Tab_Articles extends Mage_Adminh
             $articles = $this->_getFAQCategory()->getArticlesIds();
         }
         return $articles;
+    }
+    
+    protected function _filterStoreCondition($collection, $column)
+    {
+        if (!$value = $column->getFilter()->getValue()) {
+            return;
+        }
+
+        $this->getCollection()->addStoreFilter($value);
     }
 }
 

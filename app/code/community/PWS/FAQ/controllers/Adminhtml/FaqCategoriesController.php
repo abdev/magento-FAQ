@@ -23,14 +23,20 @@ class PWS_FAQ_Adminhtml_FaqCategoriesController extends Mage_Adminhtml_Controlle
         $faqCategory   = Mage::getModel('pws_faq/categories')->setStoreId($this->getRequest()->getParam('store', 0));
         $faqCategory->load($categoryId);
         
+        if (Mage::getSingleton('adminhtml/session')->getFaqCategoryData()) {
+            $faqCategory->setData(Mage::getSingleton('adminhtml/session')->getFaqCategoryData());
+            Mage::getSingleton('adminhtml/session')->setFaqCategoryData(false);
+        }
+        
         Mage::register('faq_category', $faqCategory);
         Mage::register('current_faq_category', $faqCategory);
-        
+               
 
         $this->_setActiveMenu('cms/pws_faq/categories');
         $this->_addBreadcrumb(Mage::helper('pws_faq')->__('Manage FAQ'), Mage::helper('pws_faq')->__('Manage FAQ Categories'));
 
         $this->_addContent($this->getLayout()->createBlock('pws_faq/adminhtml_faq_categories_edit'))
+            ->_addLeft($this->getLayout()->createBlock('adminhtml/store_switcher'))
             ->_addLeft($this->getLayout()->createBlock('pws_faq/adminhtml_faq_categories_edit_tabs'));
         $this->renderLayout();
     }
@@ -47,31 +53,38 @@ class PWS_FAQ_Adminhtml_FaqCategoriesController extends Mage_Adminhtml_Controlle
             try {
                 $faqCategoriesModel = Mage::getModel('pws_faq/categories');
               
-                $faq_category_data = $this->getRequest()->getParam('faq_category');
+                $faq_category_data = $this->getRequest()->getPost('faq_category');
                 $faqCategoriesModel->setName($faq_category_data['name'])
                       ->setDescription($faq_category_data['description'])
                       ->setId($this->getRequest()->getParam('id'))
+                      ->setData('store_id', $faq_category_data['store_id'])
                       ->save();
                       
+                $storeId = (empty($faq_category_data['store_id']))? 0: $faq_category_data['store_id'];      
                 
-                // the selected articles (are serialized in a hidden input)              
-                $category_articles = $this->_decodeInput($this->getRequest()->getParam('faq_category_articles'));
-                $category_articles = empty($category_articles)? 'empty':$category_articles;                
-                
-                                
-                $categoryArticlesModel = Mage::getModel('pws_faq/categoriesArticles');
-                $categoryArticlesModel->saveCategoryArticles($faqCategoriesModel->getId(), $category_articles);
-                
+                // the selected articles (are serialized in a hidden input), null means the grid was not loaded  
+                if(!is_null($this->getRequest()->getParam('faq_category_articles'))) {               
+                    $category_articles = $this->_decodeInput($this->getRequest()->getParam('faq_category_articles'));
+                    $category_articles = empty($category_articles)? 'empty':$category_articles;
+                    
+                    $categoryArticlesModel = Mage::getModel('pws_faq/categoriesArticles');
+                    $categoryArticlesModel->saveCategoryArticles($faqCategoriesModel->getId(), $category_articles);
+                }
 
                 Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('pws_faq')->__('Faq Category have been successfully saved'));
                 Mage::getSingleton('adminhtml/session')->setFaqCategoryData(false);
+                
+                if ($this->getRequest()->getParam('continue')) {                                
+                	$this->_redirect('*/*/edit', array('id' => $faqCategoriesModel->getId(), 'store'=> $storeId));
+                	return;
+                }	
 
                 $this->_redirect('*/*/');
                 return;
             } catch (Exception $e) {
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
-                Mage::getSingleton('adminhtml/session')->setFaqCategoryData($this->getRequest()->getPost());
-                $this->_redirect('*/*/edit', array('id' => $this->getRequest()->getParam('id')));
+                Mage::getSingleton('adminhtml/session')->setFaqCategoryData($this->getRequest()->getPost('faq_category'));
+                $this->_redirect('*/*/edit', array('id' => $this->getRequest()->getParam('id'),  'store'=> $storeId));
                 return;
             }
         }
@@ -102,6 +115,59 @@ class PWS_FAQ_Adminhtml_FaqCategoriesController extends Mage_Adminhtml_Controlle
 	    return true;
     }
     
+    
+    /**
+     * Get articles grid and serializer block
+     */
+    public function categoriesAction()
+    { 
+		$articleId  = (int) $this->getRequest()->getParam('id');
+        $faqArticle   = Mage::getModel('pws_faq/articles')->setStoreId($this->getRequest()->getParam('store', 0));
+        $faqArticle->load($articleId);
+        
+        Mage::register('faq_article', $faqArticle);
+        Mage::register('current_faq_article', $faqArticle);       
+		
+		if(Mage::registry('faq_article')->getId()){     
+			$faq_categories = Mage::getModel('pws_faq/categories')->setStoreId($this->getRequest()->getParam('store', 0))
+			                    ->getCollection()->filterByArticle(Mage::registry('faq_article')->getId());
+        }else{
+        	 $faq_categories = null;
+        }
+        
+        /*$block = 'pws_faq/adminhtml_faq_categories_edit_tab_categories';
+        $block = Mage::getConfig()->getBlockClassName($block);
+        var_dump($fileName = mageFindClassFile($block));
+        
+        var_dump($this->getLayout()->createBlock('pws_faq/adminhtml_faq_categories_edit_tab_categories'));*/
+        
+        $gridBlock = $this->getLayout()->createBlock('pws_faq/adminhtml_faq_categories_edit_tab_categories')
+        	->setGridUrl($this->getUrl('*/*/categoriesGridOnly', array('_current' => true)));
+        // holds the selected rows ids	
+        $serializerBlock = $this->_createSerializerBlock('faq_category_articles', $gridBlock, $faq_categories);
+
+        $this->_outputBlocks($gridBlock, $serializerBlock);
+    }
+    
+    
+    /**
+     * Get specified tab grid (we don't add the serialize block); used for filtering/searching in grid
+     */
+    public function categoriesGridOnlyAction()
+    {
+        $articleId  = (int) $this->getRequest()->getParam('id');
+        $faqArticle   = Mage::getModel('pws_faq/articles')->setStoreId($this->getRequest()->getParam('store', 0));
+        $faqArticle->load($articleId);
+        
+        Mage::register('faq_article', $faqArticle);
+        Mage::register('current_faq_article', $faqArticle);  
+        
+        $this->loadLayout();
+        $this->getResponse()->setBody(
+            $this->getLayout()->createBlock('pws_faq/adminhtml_faq_categories_edit_tab_categories')
+                ->toHtml()
+        );
+    }
     
     
 	//------------------------------------------------------------------------------

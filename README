@@ -1,6 +1,7 @@
 = Magento FAQ
 
-A Magento module for managing Frequent Asked Questions. For screenshots see the wiki: http://wiki.github.com/abdev/magento-FAQ/
+A Magento module for managing Frequent Asked Questions. The extension supports multiple store views.
+For screenshots see: http://www.pandawebstudio.com/projects/free-magento-faq-extension
 
 == Installation
 
@@ -20,13 +21,20 @@ You can find the module in admin under CMS menu: FAQ entry.
 The FAQ entry has two submenus:
 	* Categories
 	* Articles
-First you have to add the articles and then asign articles to categories. An article can be assing to more than one category.
-In Admin->System->Configuration->CMS->FAQ you can set the FAQ title (front-end) and if you want to display categories without articles (by default, they are not displayed on FAQ category page) 
+First you have to add the categories and then add articles and asign articles to categories. An article can be assigned to more than one category.
+In Admin->System->Configuration->CMS->FAQ you can set the FAQ title (front-end) and if you want to display categories without articles (by default, they are not displayed on FAQ category page).
+
+Regarding store views:
+The articles and categories support multiple store views, if you don't create a store view for an article or category, the default data ('All Store Views' view) is used. 
+
+Only the following article fields can be changed at store view level: title, content.
+Article's status is global: every article has the same status in all store views
+The category articles are in the global scope: every category has the same articles in all store views
 
 You can access the FAQ in front-end at: http://my-magento-website/faq
 
 
-For more details and screenshots see the wiki: http://wiki.github.com/abdev/magento-FAQ/
+For more details and screenshots see: http://www.pandawebstudio.com/projects/free-magento-faq-extension
 
 
 == Copyright

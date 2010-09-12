@@ -29,7 +29,7 @@ class PWS_FAQ_IndexController extends Mage_Core_Controller_Front_Action
         
         // update number of views
         $articleViews = (int)$article->getViews()+1;
-        $article->setViews($articleViews);
+        $article->setData('views', $articleViews);
         $article->save();
               
         $this->loadLayout();

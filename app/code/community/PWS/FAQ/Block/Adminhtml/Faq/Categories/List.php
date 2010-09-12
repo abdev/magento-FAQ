@@ -20,13 +20,19 @@ class PWS_FAQ_Block_Adminhtml_Faq_Categories_List extends Mage_Adminhtml_Block_W
             'label'     => $this->getAddButtonLabel(),
             'onclick'   => 'setLocation(\'' . $this->getCreateUrl() .'\')',
             'class'     => 'add',
-        ));
-        
-       
+        ));       
     }
     
     protected function _prepareLayout()
     {        
+         $this->setChild('store_switcher',
+            $this->getLayout()->createBlock('adminhtml/store_switcher')
+                ->setUseConfirm(false)
+                ->setSwitchUrl($this->getUrl('*/*/*', array('store'=>null)))
+                ->setTemplate('store/switcher.phtml')
+        );
+        
+        
         $this->setChild( 'grid',
             $this->getLayout()->createBlock('pws_faq/adminhtml_faq_categories_grid',
             $this->_controller . '.grid')->setSaveParametersInSession(true) );
@@ -38,9 +44,18 @@ class PWS_FAQ_Block_Adminhtml_Faq_Categories_List extends Mage_Adminhtml_Block_W
         return $this->getUrl('*/*/new');
     }
 
+    public function getStoreSwitcherHtml()
+    {
+        
+        return $this->getChildHtml('store_switcher');
+    }
+
     public function getGridHtml()
     {
-        return $this->getChildHtml('grid');
+        $html = $this->getChildHtml('store_switcher');
+        $html .=  $this->getChildHtml('grid');
+        
+        return $html;
     }
 
     protected function getAddButtonLabel()

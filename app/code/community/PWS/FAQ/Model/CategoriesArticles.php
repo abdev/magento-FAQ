@@ -22,6 +22,22 @@ class PWS_FAQ_Model_CategoriesArticles extends Mage_Core_Model_Abstract
     	return $this;
     }
     
+    public function saveArticleCategories($category_id, $data)
+    {
+    	if($data){
+    		$this->_getResource()->saveArticleCategories($category_id, $data);
+    	}
+    	return $this;
+    }
+    
+    public function removeArticleCategories($category_id, $data)
+    {
+    	if($data){
+    		$this->_getResource()->removeArticleCategories($category_id, $data);
+    	}
+    	return $this;
+    }
+    
     
     
       

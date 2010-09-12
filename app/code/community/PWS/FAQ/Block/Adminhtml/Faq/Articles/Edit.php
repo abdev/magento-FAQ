@@ -9,21 +9,18 @@ class PWS_FAQ_Block_Adminhtml_Faq_Articles_Edit extends Mage_Adminhtml_Block_Wid
 
         $this->_updateButton('save', 'label', Mage::helper('pws_faq')->__('Save Article'));
         $this->_updateButton('delete', 'label', Mage::helper('pws_faq')->__('Delete Article'));
-
-        if( $this->getRequest()->getParam($this->_objectId) ) {
-
-            $faqArticleData = Mage::getModel('pws_faq/articles')->load($this->getRequest()->getParam($this->_objectId));
-
-            Mage::register('faq_article_data', $faqArticleData);
-        }
-
-
+        
+        $this->_addButton('savecontinue', array(
+            'label' => Mage::helper('adminhtml')->__('Save and Continue Editing'),
+            'onclick' => "$('edit_form').action += 'continue/true/'; editForm.submit();",
+            'class' => 'save',
+        ), -1);
     }
 
     public function getHeaderText()
     {
-        if( Mage::registry('faq_article_data') && Mage::registry('faq_article_data')->getId() ) {
-            return Mage::helper('pws_faq')->__("Edit Article", $this->htmlEscape(Mage::registry('faq_article_data')->getName()));
+        if( Mage::registry('faq_article') && Mage::registry('faq_article')->getId() ) {
+            return Mage::helper('pws_faq')->__("Edit Article");
         } else {
             return Mage::helper('pws_faq')->__('New Article');
         }

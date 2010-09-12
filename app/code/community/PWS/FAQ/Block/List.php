@@ -7,9 +7,9 @@ class PWS_FAQ_Block_List extends Mage_Core_Block_Template
     {
     	
     	if(Mage::helper('pws_faq')->showCategoriesWithoutArticles()){
-    		$collection = Mage::getModel('pws_faq/categories')->getCollection()->addEnabledArticles();
+    		$collection = Mage::getModel('pws_faq/categories')->getCollection()->addArticles();
     	}else{
-    		$collection = Mage::getModel('pws_faq/categories')->getCollection()->addOnlyWithEnabledArticles();
+    		$collection = Mage::getModel('pws_faq/categories')->getCollection()->addFilterEnabledArticles();
     	}
     	
     	//echo $collection->getSelect()->__toString();

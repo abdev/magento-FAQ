@@ -9,21 +9,19 @@ class PWS_FAQ_Block_Adminhtml_Faq_Categories_Edit extends Mage_Adminhtml_Block_W
 
         $this->_updateButton('save', 'label', Mage::helper('pws_faq')->__('Save Category'));
         $this->_updateButton('delete', 'label', Mage::helper('pws_faq')->__('Delete Category'));
-
-        if( $this->getRequest()->getParam($this->_objectId) ) {
-
-            $faqCategoryData = Mage::getModel('pws_faq/categories')->load($this->getRequest()->getParam($this->_objectId));
-
-            Mage::register('faq_category_data', $faqCategoryData);
-        }
-
+        
+        $this->_addButton('savecontinue', array(
+            'label' => Mage::helper('adminhtml')->__('Save and Continue Editing'),
+            'onclick' => "$('edit_form').action += 'continue/true/'; editForm.submit();",
+            'class' => 'save',
+        ), -1);
 
     }
 
     public function getHeaderText()
     {
-        if( Mage::registry('faq_category_data') && Mage::registry('faq_category_data')->getId() ) {
-            return Mage::helper('pws_faq')->__("Edit Category", $this->htmlEscape(Mage::registry('faq_category_data')->getName()));
+        if( Mage::registry('faq_category') && Mage::registry('faq_category')->getId() ) { 
+            return Mage::helper('pws_faq')->__("Edit Category");
         } else {
             return Mage::helper('pws_faq')->__('New Category');
         }

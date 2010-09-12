@@ -6,15 +6,18 @@ class PWS_FAQ_Block_Adminhtml_Faq_Articles_Grid extends Mage_Adminhtml_Block_Wid
     {
         parent::__construct();
         $this->setId('faqArticlesGrid');
-        $this->setDefaultSort('title');
-        $this->setDefaultDir('ASC');
+        //$this->setDefaultSort('title');
+        //$this->setDefaultDir('ASC');
         $this->setSaveParametersInSession(true);
     }
 
     protected function _prepareCollection()
     { 
-        $collection = Mage::getModel('pws_faq/articles')
-            ->getResourceCollection();
+        $storeId = $this->getRequest()->getParam('store', 0);
+        
+        $collection = Mage::getModel('pws_faq/articles')->setStoreId($storeId)
+            ->getCollection(); 
+                     
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -33,7 +36,7 @@ class PWS_FAQ_Block_Adminhtml_Faq_Articles_Grid extends Mage_Adminhtml_Block_Wid
             'align'     =>'left',
             'index'     => 'title',
         ));
-        
+                
         $this->addColumn('status', array(
             'header'    => Mage::helper('pws_faq')->__('Status'),
             'align'     =>'left',
@@ -59,7 +62,9 @@ class PWS_FAQ_Block_Adminhtml_Faq_Articles_Grid extends Mage_Adminhtml_Block_Wid
 
     public function getRowUrl($row)
     {
-        return $this->getUrl('*/*/edit', array('id' => $row->getId()));
+        return $this->getUrl('*/*/edit', array('id' => $row->getId(), 'store' => $this->getRequest()->getParam('store', 0)));
     }
+    
+   
 
 }

@@ -17,17 +17,22 @@ class PWS_FAQ_Adminhtml_FaqArticlesController extends Mage_Adminhtml_Controller_
         $this->loadLayout();
         
         $articleId  = (int) $this->getRequest()->getParam('id');
-        $faqArticle   = Mage::getModel('pws_faq/articles')->setStoreId($this->getRequest()->getParam('store', 0));
-        $faqArticle->load($articleId);
+        $faqArticle = Mage::getModel('pws_faq/articles')->setStoreId($this->getRequest()->getParam('store', 0));
+        $faqArticle->load($articleId); 
+        
+        if (Mage::getSingleton('adminhtml/session')->getFaqArticleData()) {
+            $faqArticle->setData(Mage::getSingleton('adminhtml/session')->getFaqArticleData());
+            Mage::getSingleton('adminhtml/session')->setFaqArticleData(false);
+        }
         
         Mage::register('faq_article', $faqArticle);
         Mage::register('current_faq_article', $faqArticle);
-        
 
         $this->_setActiveMenu('cms/pws_faq/articles');
         $this->_addBreadcrumb(Mage::helper('pws_faq')->__('Manage FAQ'), Mage::helper('pws_faq')->__('Manage FAQ Articles'));
 
         $this->_addContent($this->getLayout()->createBlock('pws_faq/adminhtml_faq_articles_edit'))
+            ->_addLeft($this->getLayout()->createBlock('adminhtml/store_switcher'))
             ->_addLeft($this->getLayout()->createBlock('pws_faq/adminhtml_faq_articles_edit_tabs'));
         $this->renderLayout();
     }
@@ -42,37 +47,48 @@ class PWS_FAQ_Adminhtml_FaqArticlesController extends Mage_Adminhtml_Controller_
 
         if ( $this->getRequest()->getPost() ) {
             try {
-                $faqArticlesModel = Mage::getModel('pws_faq/articles');
-              
-              	$todayDate  = Mage::app()->getLocale()->date()->toString(Varien_Date::DATETIME_INTERNAL_FORMAT);
-              
-                $faq_article_data = $this->getRequest()->getParam('faq_article');
+                $faqArticlesModel = Mage::getModel('pws_faq/articles');             
+                           
+                $faq_article_data = $this->getRequest()->getPost('faq_article');
+                $storeId = (empty($faq_article_data['store_id']))? 0: $faq_article_data['store_id'];
+                
                 $faqArticlesModel->setTitle($faq_article_data['title'])
                       ->setContent($faq_article_data['content'])
-                      ->setStatus($faq_article_data['status'])
                       ->setId($this->getRequest()->getParam('id'))
-                      ->setUpdatedOn($todayDate);
+                      ->setStatus($faq_article_data['status']);
+                                        
                 if(!$this->getRequest()->getParam('id')){
-                	$faqArticlesModel->setCreatedOn($todayDate);
+                    $todayDate  = Mage::app()->getLocale()->date()->toString(Varien_Date::DATETIME_INTERNAL_FORMAT);
+                	$faqArticlesModel->setData('created_on', $todayDate);                	
                 } 
+                
+                $faqArticlesModel->setData('store_id', $storeId);
+                
                 $faqArticlesModel->save();
                                
-                //$product_set_products = $this->_decodeInput($this->getRequest()->getParam('product_set_products'));
-                //$product_set_products = empty($product_set_products)? 'empty':$product_set_products;                
-                
-                //$productSetsProductsModel = Mage::getModel('pws_faq/productsetsproducts');
-                //$productSetsProductsModel->saveSetProduct($productSetsModel->getId(), $product_set_products);
-                
+                // the selected categories (are serialized in a hidden input), null means the grid was not loaded  
+                if(!is_null($this->getRequest()->getParam('faq_category_articles'))) {           
+                    $category_articles = $this->_decodeInput($this->getRequest()->getParam('faq_category_articles'));
+                    $category_articles = empty($category_articles)? 'empty':$category_articles;//empty because of a strage error 
+                    
+                    $categoryArticlesModel = Mage::getModel('pws_faq/categoriesArticles');
+                    $categoryArticlesModel->saveArticleCategories($faqArticlesModel->getId(), $category_articles);
+                }
 
-                Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('pws_faq')->__('Faq Article have been successfully saved'));
+                Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('pws_faq')->__('Faq Article has been successfully saved'));
                 Mage::getSingleton('adminhtml/session')->setFaqArticleData(false);
+                
+                if ($this->getRequest()->getParam('continue')) {                                
+                	$this->_redirect('*/*/edit', array('id' => $faqArticlesModel->getId(), 'store'=> $storeId));
+                	return;
+                }	
 
                 $this->_redirect('*/*/');
                 return;
             } catch (Exception $e) {
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
-                Mage::getSingleton('adminhtml/session')->setFaqArticleData($this->getRequest()->getPost());
-                $this->_redirect('*/*/edit', array('id' => $this->getRequest()->getParam('id')));
+                Mage::getSingleton('adminhtml/session')->setFaqArticleData($this->getRequest()->getPost('faq_article'));
+                $this->_redirect('*/*/edit', array('id' => $this->getRequest()->getParam('id'), 'store'=> $faq_article_data['store_id']));
                 return;
             }
         }
@@ -117,7 +133,8 @@ class PWS_FAQ_Adminhtml_FaqArticlesController extends Mage_Adminhtml_Controller_
         Mage::register('current_faq_category', $faqCategory);       
 		
 		if(Mage::registry('faq_category')->getId()){     
-			$faq_articles = Mage::getModel('pws_faq/articles')->getCollection()->filterByCategory(Mage::registry('faq_category')->getId());
+			$faq_articles = Mage::getModel('pws_faq/articles')->setStoreId($this->getRequest()->getParam('store', 0))
+			                    ->getCollection()->filterByCategory(Mage::registry('faq_category')->getId());
         }else{
         	 $faq_articles = null;
         }    

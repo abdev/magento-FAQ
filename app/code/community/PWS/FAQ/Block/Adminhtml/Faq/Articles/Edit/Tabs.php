@@ -12,8 +12,8 @@ class PWS_FAQ_Block_Adminhtml_Faq_Articles_Edit_Tabs extends Mage_Adminhtml_Bloc
     
     protected function _prepareLayout()
     {
-        /*$this->getLayout()->getBlock('head')
-            ->addJs('pws/relatedproductsets/productLink.js');*/
+        $this->getLayout()->getBlock('head')
+            ->addJs('pws/faq/productLink.js');
 
         parent::_prepareLayout();
     }
@@ -27,12 +27,12 @@ class PWS_FAQ_Block_Adminhtml_Faq_Articles_Edit_Tabs extends Mage_Adminhtml_Bloc
             'content'   => $this->getLayout()->createBlock('pws_faq/adminhtml_faq_articles_edit_tab_form')->toHtml(),
         ));
         
-        //$this->addTab('faq_articles_articles', array(
-        //        'label'     => Mage::helper('pws_faq')->__('Set Articles'),
-        //        'title'     => Mage::helper('pws_faq')->__('Set Articles'),
-        //        'url'       => $this->getUrl('*/*/products', array('_current' => true)),
-        //        'class'     => 'ajax',                
-        //));
+        $this->addTab('faq_categories', array(
+                'label'     => Mage::helper('pws_faq')->__('Set Categories'),
+                'title'     => Mage::helper('pws_faq')->__('Set Categories'),
+                'url'       => $this->getUrl('*/faqCategories/categories', array('_current' => true)),
+                'class'     => 'ajax',                
+        ));
         return parent::_beforeToHtml();
     }
 }

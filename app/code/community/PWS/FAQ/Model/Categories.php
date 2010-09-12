@@ -1,24 +1,35 @@
 <?php
 class PWS_FAQ_Model_Categories extends Mage_Core_Model_Abstract 
 {
+    private $_storeId;
+    
     protected function _construct()
     {
         $this->_init('pws_faq/categories');
     }
     
-    public function getArticles()
-    {    	
-    	$faqCategoriesArticlesCollection = Mage::getModel('pws_faq/categoriesArticles')->getCollection()
-    				->addFieldToFilter('category_id',$this->getId()); 
-    				
-        return  $faqCategoriesArticlesCollection;     
-    } 
+    function setStoreId($storeId) {
+        $this->_storeId = $storeId;
+        $this->getResource()->setStoreId($storeId);
+        return $this;
+    }
     
+    public function getStoreId()
+    {
+        if (is_null($this->_storeId)) {
+            return Mage::app()->getStore()->getId();
+        }
+        return $this->_storeId;
+    }    
+    
+       
     public function getArticlesIds()
     {
     	$articleIds = array();
     	
-    	$categoryArticles = $this->getArticles();
+    	$categoryArticles = Mage::getModel('pws_faq/categoriesArticles')->getCollection()
+    				->addFieldToFilter('category_id',$this->getId()); 
+    				
     	if($categoryArticles){
     		foreach($categoryArticles as $article){   
     			$articleIds[] = $article->getArticleId();
@@ -28,15 +39,13 @@ class PWS_FAQ_Model_Categories extends Mage_Core_Model_Abstract
     	return $articleIds;
     }  
     
-    
+    /*
+    * we use the articles collection so we can have article store view data
+    */
     public function getEnabledArticles()
     {
-    	$faqCategoriesArticlesCollection = Mage::getModel('pws_faq/categoriesArticles')->getCollection()    				
-    				->join('pws_faq/articles','main_table.article_id = `pws_faq/articles`.article_id')
-    				->addFieldToFilter('category_id',$this->getId())
-    				->addFieldToFilter('`pws_faq/articles`.status','enabled')
-    				->addOrder('position','ASC'); 
-    				
-        return  $faqCategoriesArticlesCollection; 
+    	$faqArticlesCollection = Mage::getModel('pws_faq/articles')->getCollection()->getCategoryEnabledArticles($this->getId());
+    	
+    	return $faqArticlesCollection;
     }
 }

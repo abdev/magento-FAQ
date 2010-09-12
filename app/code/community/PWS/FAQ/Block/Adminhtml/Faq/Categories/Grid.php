@@ -13,7 +13,11 @@ class PWS_FAQ_Block_Adminhtml_Faq_Categories_Grid extends Mage_Adminhtml_Block_W
 
     protected function _prepareCollection()
     { 
-        $collection = Mage::getModel('pws_faq/categories')->getCollection()->addArticles();
+        $storeId = $this->getRequest()->getParam('store', 0);
+        
+        $collection = Mage::getModel('pws_faq/categories')->setStoreId($storeId)
+                        ->getCollection()->addArticles();
+                        
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -32,6 +36,7 @@ class PWS_FAQ_Block_Adminhtml_Faq_Categories_Grid extends Mage_Adminhtml_Block_W
             'align'     =>'left',
             'index'     => 'name',
         ));
+     
         
         $this->addColumn('no_of_articles', array(
             'header'    => Mage::helper('pws_faq')->__('Articles #'),
@@ -45,6 +50,15 @@ class PWS_FAQ_Block_Adminhtml_Faq_Categories_Grid extends Mage_Adminhtml_Block_W
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', array('id' => $row->getId()));
+    }
+    
+    protected function _filterStoreCondition($collection, $column)
+    {
+        if (!$value = $column->getFilter()->getValue()) {
+            return;
+        }
+
+        $this->getCollection()->addFieldToFilter('store_id',$value);
     }
 
 }
