@@ -1,7 +1,5 @@
     var productLinksController = Class.create();
     
-    console.log('the fuck');
-
     productLinksController.prototype = {
         initialize : function(fieldId, products, grid) {
             this.saveField = $(fieldId);
