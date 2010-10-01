@@ -54,7 +54,7 @@ class PWS_FAQ_Block_Adminhtml_Faq_Categories_Edit_Tab_Categories extends Mage_Ad
         if(Mage::registry('faq_article')->getId()){
 		    $collection = Mage::getModel('pws_faq/categories')->getCollection()->filterByArticle(Mage::registry('faq_article')->getId(), $joinType = 'left');	
 		}else{
-			$collection = Mage::getModel('pws_faq/categories')->getCollection();
+			$collection = Mage::getModel('pws_faq/categories')->getCollection()->filterByArticle($articleId = 0, $joinType = 'left');
 		}
 
         $this->setCollection($collection);
