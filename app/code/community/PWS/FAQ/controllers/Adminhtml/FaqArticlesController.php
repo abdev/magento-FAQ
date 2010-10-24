@@ -25,6 +25,7 @@ class PWS_FAQ_Adminhtml_FaqArticlesController extends Mage_Adminhtml_Controller_
             Mage::getSingleton('adminhtml/session')->setFaqArticleData(false);
         }
         
+               
         Mage::register('store_id', $this->getRequest()->getParam('store', 0));
         Mage::register('faq_article', $faqArticle);
         Mage::register('current_faq_article', $faqArticle);

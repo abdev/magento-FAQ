@@ -24,7 +24,7 @@ class PWS_FAQ_Block_Adminhtml_Faq_Articles_Edit_Tab_Form extends Mage_Adminhtml_
             'required'  => true,
             'class' => 'use_default',
             'note' => Mage::helper('pws_faq')->__('scope: [STORE VIEW]'),
-        ));        
+        )); 
         
         $fieldset->addField('content', 'editor', array(
             'name'      => 'faq_article[content]',
