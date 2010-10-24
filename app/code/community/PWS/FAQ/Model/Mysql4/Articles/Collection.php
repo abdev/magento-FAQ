@@ -107,10 +107,14 @@ class PWS_FAQ_Model_Mysql4_Articles_Collection extends Mage_Core_Model_Mysql4_Co
                 ->from("",array(
                             'title_default' => "article_default_store_table.title",
                             'title_store' => "article_store_table.title",
-                            'title' => new Zend_Db_Expr('IFNULL(article_store_table.title,article_default_store_table.title)'),
+                            'title' => new Zend_Db_Expr('IF(article_store_table.title IS NULL || article_store_table.use_default = 1, 
+                                                            article_default_store_table.title, 
+                                                            article_store_table.title)'),
                             'content_default' => "article_default_store_table.content",
                             'content_store' => "article_store_table.content",
-                            'content' => new Zend_Db_Expr('IFNULL(article_store_table.content,article_default_store_table.content)'),
+                            'content' => new Zend_Db_Expr('IF(article_store_table.content IS NULL || article_store_table.use_default = 1, 
+                                                                article_default_store_table.content, 
+                                                                article_store_table.content)'),
                             'updated_default' => "article_default_store_table.content",
                             'updated_store' => "article_store_table.content",
                             'updated_on' => new Zend_Db_Expr('IFNULL(article_store_table.updated_on,article_default_store_table.updated_on)')

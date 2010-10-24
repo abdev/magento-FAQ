@@ -9,7 +9,8 @@ class PWS_FAQ_Block_Adminhtml_Faq_Articles_Edit_Tab_Articles extends Mage_Adminh
         $this->setUseAjax(true);
         
         //filter articles by category
-        if ($this->_getFAQCategory()->getId()) {
+        $selectedArticles = $this->_getSelectedArticles();
+        if ($this->_getFAQCategory()->getId() && count($selectedArticles)>0) {
             $this->setDefaultFilter(array('in_articles'=>1));
         }
     }
@@ -56,7 +57,7 @@ class PWS_FAQ_Block_Adminhtml_Faq_Articles_Edit_Tab_Articles extends Mage_Adminh
 		    
 		    //var_dump($collection->toArray());	   
 		}else{
-			$collection = Mage::getModel('pws_faq/articles')->getCollection()->filterByCategory(Mage::registry('faq_category')->getId(), $joinType = 'left');;
+			$collection = Mage::getModel('pws_faq/articles')->getCollection()->filterByCategory(Mage::registry('faq_category')->getId(), $joinType = 'left');
 		}
         
 

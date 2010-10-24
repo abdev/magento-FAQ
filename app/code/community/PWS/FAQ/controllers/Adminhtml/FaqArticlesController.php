@@ -25,6 +25,7 @@ class PWS_FAQ_Adminhtml_FaqArticlesController extends Mage_Adminhtml_Controller_
             Mage::getSingleton('adminhtml/session')->setFaqArticleData(false);
         }
         
+        Mage::register('store_id', $this->getRequest()->getParam('store', 0));
         Mage::register('faq_article', $faqArticle);
         Mage::register('current_faq_article', $faqArticle);
 
@@ -52,10 +53,12 @@ class PWS_FAQ_Adminhtml_FaqArticlesController extends Mage_Adminhtml_Controller_
                 $faq_article_data = $this->getRequest()->getPost('faq_article');
                 $storeId = (empty($faq_article_data['store_id']))? 0: $faq_article_data['store_id'];
                 
+                $faq_article_data['use_default'] = isset($faq_article_data['use_default'])? 1 : 0;
                 $faqArticlesModel->setTitle($faq_article_data['title'])
                       ->setContent($faq_article_data['content'])
                       ->setId($this->getRequest()->getParam('id'))
-                      ->setStatus($faq_article_data['status']);
+                      ->setStatus($faq_article_data['status'])
+                      ->setUseDefault($faq_article_data['use_default']);               
                                         
                 if(!$this->getRequest()->getParam('id')){
                     $todayDate  = Mage::app()->getLocale()->date()->toString(Varien_Date::DATETIME_INTERNAL_FORMAT);

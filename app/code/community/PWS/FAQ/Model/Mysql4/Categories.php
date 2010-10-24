@@ -32,6 +32,25 @@ class PWS_FAQ_Model_Mysql4_Categories extends Mage_Core_Model_Mysql4_Abstract
         $storeArray['category_id'] = $object->getData('category_id');
         $storeArray['name'] = $object->getData('name');
         $storeArray['description'] = $object->getData('description'); 
+        $storeArray['use_default'] = $object->getData('use_default');
+        
+        if ($object->getData('store_id') == 0) {
+            $storeArray['use_default'] = 1;//always 1 for the default view
+        }
+        
+        //get default values
+        if($object->getData('use_default') == 1 && $object->getData('store_id') != 0) {
+            $select = $this->_getReadAdapter()->select()
+                ->from($this->getTable('pws_faq/categories_stores'))
+                ->where('category_id = ?', $object->getId())
+                ->where('store_id = ?', 0);
+
+            if ($data = $this->_getReadAdapter()->fetchRow($select)) {
+                $storeArray['name'] = $data['name'];
+                $storeArray['description'] = $data['description'];
+                $storeArray['use_default'] = 1;
+            } 
+        }
         
         //remove previous data
         $condition1 = $this->_getWriteAdapter()->quoteInto('category_id = ?', $storeArray['category_id']);
@@ -58,10 +77,11 @@ class PWS_FAQ_Model_Mysql4_Categories extends Mage_Core_Model_Mysql4_Abstract
         if ($data = $this->_getReadAdapter()->fetchRow($select)) {
             $object->setData('name', $data['name']);
             $object->setData('description', $data['description']);
+            $object->setData('use_default', $data['use_default']);
         } 
         
         //use default record
-        if($object->getStoreId() != 0 && empty($data)) {
+        if($object->getStoreId() != 0 && (empty($data) || $data['use_default'] == 1)) {
             $select = $this->_getReadAdapter()->select()
                 ->from($this->getTable('pws_faq/categories_stores'))
                 ->where('category_id = ?', $object->getId())
@@ -70,6 +90,7 @@ class PWS_FAQ_Model_Mysql4_Categories extends Mage_Core_Model_Mysql4_Abstract
             if ($data = $this->_getReadAdapter()->fetchRow($select)) {
                 $object->setData('name', $data['name']);
                 $object->setData('description', $data['description']);
+                $object->setData('use_default', $data['use_default']);
             } 
         }
 

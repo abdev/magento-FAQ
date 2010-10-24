@@ -15,6 +15,21 @@ class PWS_FAQ_Block_Adminhtml_Faq_Articles_Edit extends Mage_Adminhtml_Block_Wid
             'onclick' => "$('edit_form').action += 'continue/true/'; editForm.submit();",
             'class' => 'save',
         ), -1);
+        
+        $this->_formScripts[] = "
+            function toggleEditor() {
+                console.log('toggleEditor');
+                if (tinyMCE.getInstanceById('content') == null) {
+                    tinyMCE.execCommand('mceAddControl', false, 'content');
+                } else {
+                    tinyMCE.execCommand('mceRemoveControl', false, 'content');
+                }
+            }
+
+            function saveAndContinueEdit(){
+                editForm.submit($('edit_form').action+'back/edit/');
+            }
+        ";
     }
 
     public function getHeaderText()

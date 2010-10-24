@@ -28,6 +28,7 @@ class PWS_FAQ_Adminhtml_FaqCategoriesController extends Mage_Adminhtml_Controlle
             Mage::getSingleton('adminhtml/session')->setFaqCategoryData(false);
         }
         
+        Mage::register('store_id', $this->getRequest()->getParam('store', 0));
         Mage::register('faq_category', $faqCategory);
         Mage::register('current_faq_category', $faqCategory);
                
@@ -54,10 +55,12 @@ class PWS_FAQ_Adminhtml_FaqCategoriesController extends Mage_Adminhtml_Controlle
                 $faqCategoriesModel = Mage::getModel('pws_faq/categories');
               
                 $faq_category_data = $this->getRequest()->getPost('faq_category');
+                $faq_category_data['use_default'] = isset($faq_category_data['use_default'])? 1 : 0;
                 $faqCategoriesModel->setName($faq_category_data['name'])
                       ->setDescription($faq_category_data['description'])
                       ->setId($this->getRequest()->getParam('id'))
                       ->setData('store_id', $faq_category_data['store_id'])
+                      ->setUseDefault($faq_category_data['use_default']) 
                       ->save();
                       
                 $storeId = (empty($faq_category_data['store_id']))? 0: $faq_category_data['store_id'];      

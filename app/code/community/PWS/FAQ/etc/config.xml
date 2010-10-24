@@ -2,7 +2,7 @@
 <config>
     <modules>
         <PWS_FAQ>
-            <version>0.1.1</version>
+            <version>0.1.2</version>
         </PWS_FAQ>
     </modules>        
     <frontend>

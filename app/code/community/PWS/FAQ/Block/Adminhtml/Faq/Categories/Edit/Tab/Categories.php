@@ -9,7 +9,8 @@ class PWS_FAQ_Block_Adminhtml_Faq_Categories_Edit_Tab_Categories extends Mage_Ad
         $this->setUseAjax(true);
         
         //filter categories by article
-        if ($this->_getFAQArticle()->getId()) {
+        $selectedCategories = $this->_getSelectedCategories();
+        if ($this->_getFAQArticle()->getId() && count($selectedCategories)>0) {
             $this->setDefaultFilter(array('in_categories'=>1));
         }
     }

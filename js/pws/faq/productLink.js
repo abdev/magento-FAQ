@@ -1,5 +1,5 @@
     var productLinksController = Class.create();
-    
+
     productLinksController.prototype = {
         initialize : function(fieldId, products, grid) {
             this.saveField = $(fieldId);
@@ -82,3 +82,35 @@
             }
         }
     };
+    
+    //toggle disable for article title and content
+    document.observe("dom:loaded", function() {
+        function disableFields() {               
+                if ($('use_default').checked) {     
+                    $$('.use_default').each(function(el){
+                        el.readOnly = true;
+                        el.setStyle({color: '#999'});
+                    }); 
+                } else {
+                    $$('.use_default').each(function(el){
+                        el.readOnly = false;
+                        el.setStyle({color: '#2F2F2F'});
+                    }); 
+                }
+            }
+    
+       
+        if ($('faq_articles_form') && $('use_default')) {            
+            $('use_default').observe('click', disableFields);
+            
+            disableFields();
+        }
+        
+        
+         if ($('faq_categories_form') && $('use_default')) {
+                     
+            $('use_default').observe('click', disableFields);
+            
+            disableFields();
+        }
+    });

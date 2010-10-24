@@ -31,9 +31,28 @@ class PWS_FAQ_Model_Mysql4_Articles extends Mage_Core_Model_Mysql4_Abstract
         $storeArray['article_id'] = $object->getData('article_id');
         $storeArray['title'] = $object->getData('title');
         $storeArray['content'] = $object->getData('content'); 
+        $storeArray['use_default'] = $object->getData('use_default');
         
         if ($object->getData('views')) {
             $storeArray['views'] = $object->getData('views');
+        }
+        
+        if ($object->getData('store_id') == 0) {
+            $storeArray['use_default'] = 1;//always 1 for the default view
+        }
+        
+        //get default values
+        if($object->getData('use_default') == 1 && $object->getData('store_id') != 0) {
+            $select = $this->_getReadAdapter()->select()
+                ->from($this->getTable('pws_faq/articles_stores'))
+                ->where('article_id = ?', $object->getId())
+                ->where('store_id = ?', 0);
+
+            if ($data = $this->_getReadAdapter()->fetchRow($select)) {
+                $storeArray['title'] = $data['title'];
+                $storeArray['content'] = $data['content'];
+                $storeArray['use_default'] = 1;
+            } 
         }
         
         //remove previous data
@@ -66,10 +85,11 @@ class PWS_FAQ_Model_Mysql4_Articles extends Mage_Core_Model_Mysql4_Abstract
             $object->setData('content', $data['content']);
             $object->setData('updated_on', $data['updated_on']);
             $object->setData('views', $data['views']);
+            $object->setData('use_default', $data['use_default']);
         } 
         
         //use default record
-        if($object->getStoreId() != 0 && empty($data)) {
+        if($object->getStoreId() != 0 && (empty($data) || $data['use_default'] == 1)) {
             $select = $this->_getReadAdapter()->select()
                 ->from($this->getTable('pws_faq/articles_stores'))
                 ->where('article_id = ?', $object->getId())
@@ -79,8 +99,10 @@ class PWS_FAQ_Model_Mysql4_Articles extends Mage_Core_Model_Mysql4_Abstract
                 $object->setData('title', $data['title']);
                 $object->setData('content', $data['content']);
                 $object->setData('updated_on', $data['updated_on']);
+                $object->setData('use_default', $data['use_default']);
             } 
         }
+       
 
         return parent::_afterLoad($object);
     }

@@ -22,17 +22,30 @@ class PWS_FAQ_Block_Adminhtml_Faq_Articles_Edit_Tab_Form extends Mage_Adminhtml_
             'label'     => Mage::helper('pws_faq')->__('Title'),
             'class'     => 'required-entry',
             'required'  => true,
+            'class' => 'use_default',
             'note' => Mage::helper('pws_faq')->__('scope: [STORE VIEW]'),
         ));        
         
-        $fieldset->addField('content', 'textarea', array(
+        $fieldset->addField('content', 'editor', array(
             'name'      => 'faq_article[content]',
             'label'     => Mage::helper('pws_faq')->__('Content'),
             'class'     => 'required-entry',
             'required'  => true,
+            'wysiwyg'   => true,
+            'class' => 'use_default',
             'note' => Mage::helper('pws_faq')->__('scope: [STORE VIEW]'),
         ));
         
+        if (Mage::registry('store_id') && Mage::registry('store_id') !=0 ) {		      
+            $useDefault = $fieldset->addField('use_default', 'checkbox', array(
+                'name'      => 'faq_article[use_default]',
+                'label'     => Mage::helper('pws_faq')->__('Use Default Values'),
+                'value'		=> '1',       
+                'note' => Mage::helper('pws_faq')->__('scope: [STORE VIEW]; use default values for title and content'),
+                'onclick' => "",
+            ));
+        }
+             
         $fieldset->addField('status', 'select', array(
                 'label'     => Mage::helper('pws_faq')->__('Status'),
                 'name'      => 'faq_article[status]',
@@ -45,8 +58,12 @@ class PWS_FAQ_Block_Adminhtml_Faq_Articles_Edit_Tab_Form extends Mage_Adminhtml_
             ));
 
       
-		if(Mage::registry('faq_article')){			
-        	$form->setValues(Mage::registry('faq_article')->getData());
+		if (Mage::registry('faq_article')) {			
+        	$form->setValues(Mage::registry('faq_article')->getData()); 
+        	$useDefaultValue = Mage::registry('faq_article')->getData('use_default');  
+        	if (isset($useDefault) && isset($useDefaultValue) && $useDefaultValue != 0) {
+        	    $useDefault->setIsChecked(true);
+        	}
         }
         return parent::_prepareForm();
     }

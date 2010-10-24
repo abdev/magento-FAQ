@@ -154,10 +154,15 @@ class PWS_FAQ_Model_Mysql4_Categories_Collection extends Mage_Core_Model_Mysql4_
                 ->from("",array(
                             'name_default' => "category_default_store_table.name",
                             'name_store' => "category_store_table.name",
-                            'name' => new Zend_Db_Expr('IFNULL(category_store_table.name,category_default_store_table.name)'),
+                            'name' => new Zend_Db_Expr('IF(category_store_table.name IS NULL || category_store_table.use_default =1,
+                                                            category_default_store_table.name,
+                                                            category_store_table.name)'),
                             'description_default' => "category_default_store_table.description",
                             'description_store' => "category_store_table.description",
-                            'description' => new Zend_Db_Expr('IFNULL(category_store_table.description, category_default_store_table.description)')
+                            'description' => new Zend_Db_Expr('IF(category_store_table.description IS NULL || category_store_table.use_default =1, 
+                                                                category_default_store_table.description,
+                                                                category_store_table.description
+                                                                )')
                             )
             );
         
